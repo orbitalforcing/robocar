@@ -1,7 +1,7 @@
 # Robocar master control program
 # v0.1 - keyboard steering logic for PWM motor control
 
-　
+
 import RPi.GPIO as GPIO # Import the GPIO Library
 import time # Import the Time library
 import sys, tty, termios, time
@@ -43,7 +43,7 @@ def getch():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
     return ch
 
-　
+
 # set the GPIO to software PWM at at frequency Hz
 pwmMotorAForwards = GPIO.PWM(pinMotorAForwards, Frequency)
 pwmMotorABackwards = GPIO.PWM(pinMotorABackwards, Frequency)
@@ -91,7 +91,7 @@ def Right():
     pwmMotorBForwards.ChangeDutyCycle(Stop)
     pwmMotorBBackwards.ChangeDutyCycle(DutyCycleB)
 
-　
+
 # This method will toggle the direction of the steering
 # motor. The method will determine whether the user wants
 # to turn left or right depending on the key they press and
@@ -100,23 +100,26 @@ def Right():
 # the same time. The possible positions of the wheels are
 # "right", "centre" and "left". It will then update the
 # status of the wheel to access next time it is called.
+
 def toggleSteering(direction):
 
     global wheelStatus
 
     if(direction == "right"):
         if(wheelStatus == "centre"):
-            Forwards()
             wheelStatus = "right"
+            Right()
         elif(wheelStatus == "left"):
             wheelStatus = "centre"
+            Forwards()
 
     if(direction == "left"):
         if(wheelStatus == "centre"):
-            Backwards()
             wheelStatus = "left"
+            Left()
         elif(wheelStatus == "right"):
             wheelStatus = "centre"
+            Forwards()
 
 # Global variables for the status of the steering
 wheelStatus = "centre"
@@ -124,7 +127,6 @@ wheelStatus = "centre"
 # Instructions for when the user has an interface
 print("w/s: acceleration")
 print("a/d: steering")
-print("l: lights")
 print("x: exit")
 
 # Infinite loop that will not end until the user presses the
@@ -155,10 +157,6 @@ while True:
         print("Program Ended")
         break
 
-    # At the end of each loop the acceleration motor will stop
-    # and wait for its next command
-    # motor2.ChangeDutyCycle(0)
-
     # The keyboard character variable will be set to blank, ready
     # to save the next key that is pressed
     char = ""
@@ -178,7 +176,7 @@ while True:
 # Backwards()
 # time.sleep(5)
 
-　
+
 StopMotors()
 
 GPIO.cleanup()
